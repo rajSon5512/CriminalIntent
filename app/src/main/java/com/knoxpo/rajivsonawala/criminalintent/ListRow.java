@@ -12,7 +12,7 @@ public class ListRow extends RecyclerView.ViewHolder {
 
         super(view);
 
-        mThumbnails=(ImageView)view.findViewById(R.id.crime_recycler_view);
+        //mThumbnails=(ImageView)view.findViewById(R.id.crime_recycler_view);
     }
 
 
