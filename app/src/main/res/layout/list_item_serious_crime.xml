@@ -5,8 +5,12 @@
     android:orientation="vertical"
     android:padding="@dimen/padding_crime_item">
 
-
     <include layout="@layout/include_crime_elements" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/btn_call"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/call_police" />
 
+</LinearLayout>

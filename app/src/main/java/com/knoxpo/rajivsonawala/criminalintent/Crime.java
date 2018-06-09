@@ -10,6 +10,8 @@ public class Crime {
     private Date mDate;
     private boolean mSolved;
 
+    private boolean mIsSerious;
+
     public Crime(){
 
         mId=UUID.randomUUID();
@@ -45,4 +47,11 @@ public class Crime {
         mSolved = solved;
     }
 
+    public boolean isSerious() {
+        return mIsSerious;
+    }
+
+    public void setSerious(boolean serious) {
+        mIsSerious = serious;
+    }
 }

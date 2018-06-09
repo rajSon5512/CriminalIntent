@@ -1,5 +1,7 @@
 package com.knoxpo.rajivsonawala.criminalintent;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -8,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,9 +52,8 @@ public class CrimeListFragment extends Fragment {
         private TextView mDateTextView;
         private Crime mCrime;
 
-        public CrimeHolder(LayoutInflater inflater, ViewGroup parent) {
-
-            super(inflater.inflate(R.layout.list_item_crime, parent, false));
+        public CrimeHolder(View itemView) {
+            super(itemView);
             mTitleTextView = (TextView) itemView.findViewById(R.id.crime_title);
             mDateTextView = (TextView) itemView.findViewById(R.id.crime_date);
             itemView.setOnClickListener(this);
@@ -72,7 +74,39 @@ public class CrimeListFragment extends Fragment {
         }
     }
 
+    private class SeriousCrimeHolder extends CrimeHolder {
+
+        private Button mCallButton;
+
+        public SeriousCrimeHolder(View itemView) {
+            super(itemView);
+            mCallButton = itemView.findViewById(R.id.btn_call);
+            mCallButton.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.btn_call:
+                    //make a call
+                    Intent callIntent = new Intent(
+                            Intent.ACTION_DIAL,
+                            Uri.parse("tel:100")
+                    );
+                    //callIntent.setData);
+                    startActivity(callIntent);
+                    break;
+                default:
+                    super.onClick(view);
+            }
+        }
+    }
+
     private class CrimeAdapterFist extends RecyclerView.Adapter<CrimeHolder> {
+
+        private static final int
+                TYPE_NORMAL_CRIME = 0,
+                TYPE_SERIOUS_CRIME = 1;
 
         private List<Crime> mCrimes;
 
@@ -85,17 +119,31 @@ public class CrimeListFragment extends Fragment {
         public CrimeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-
-            return new CrimeHolder(layoutInflater, parent);
+            switch (viewType) {
+                case TYPE_NORMAL_CRIME:
+                    View normalView = layoutInflater.inflate(R.layout.list_item_crime, parent, false);
+                    return new CrimeHolder(normalView);
+                case TYPE_SERIOUS_CRIME:
+                    View seriousView = layoutInflater.inflate(R.layout.list_item_serious_crime, parent, false);
+                    return new SeriousCrimeHolder(seriousView);
+                default:
+                    throw new RuntimeException("Not a valid view type: " + viewType);
+            }
         }
 
         @Override
         public void onBindViewHolder(@NonNull CrimeHolder holder, int position) {
-
-
             Crime crime = mCrimes.get(position);
             holder.bind(crime);
+        }
 
+        @Override
+        public int getItemViewType(int position) {
+            Crime crime = mCrimes.get(position);
+            if (crime.isSerious()) {
+                return TYPE_SERIOUS_CRIME;
+            }
+            return TYPE_NORMAL_CRIME;
         }
 
         @Override
@@ -104,7 +152,6 @@ public class CrimeListFragment extends Fragment {
         }
 
     }
-
 
 
 }
