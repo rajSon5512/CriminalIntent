@@ -116,7 +116,11 @@ public class CrimeListFragment extends Fragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
 
-
+        updateUI();
+    }
 }
 
