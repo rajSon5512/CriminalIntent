@@ -16,7 +16,10 @@ public class CriminalIntent extends SingleFragmentActivity {
 
     @Override
     protected Fragment creatFragment() {
-        return new CrimeFragment();
+
+        UUID crim_Id=(UUID)getIntent().getSerializableExtra(EXTRA_NAME_LAST);
+        return CrimeFragment.newInstance(crim_Id);
+
     }
 
     public static Intent newIntent(Context packageContext, UUID Id){
@@ -26,6 +29,7 @@ public class CriminalIntent extends SingleFragmentActivity {
         return intent;
 
     }
+
 
 
 }
