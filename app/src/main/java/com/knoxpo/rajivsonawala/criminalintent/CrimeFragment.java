@@ -77,6 +77,16 @@ public class CrimeFragment extends Fragment {
         return v;
     }
 
+    public static CrimeFragment newInstance(UUID crimeId) {
+
+        Bundle args = new Bundle();
+        String ARG_CRIME_ID="Your_Id";
+        args.putSerializable(ARG_CRIME_ID, crimeId);
+        CrimeFragment fragment = new CrimeFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 
 
 
