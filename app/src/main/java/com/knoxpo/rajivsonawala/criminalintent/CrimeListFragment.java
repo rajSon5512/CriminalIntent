@@ -7,15 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class CrimeListFragment extends Fragment {
@@ -24,6 +22,8 @@ public class CrimeListFragment extends Fragment {
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapterFist mCrimeAdapter;
     private Crime mCrime;
+    private String TAG="Your_Item";
+    private int tempPosition=0;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
 
@@ -33,18 +33,23 @@ public class CrimeListFragment extends Fragment {
 
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        updateUI();
+        updateUI(0);
 
         return v;
     }
 
-    private void updateUI() {
+    private void updateUI(int position) {
         CrimeLab cm = CrimeLab.get(getActivity());
         List<Crime> crimes = cm.getCrime();
 
-        mCrimeAdapter = new CrimeAdapterFist(crimes);
-        mCrimeRecyclerView.setAdapter(mCrimeAdapter);
-
+        if(mCrimeAdapter==null) {
+            mCrimeAdapter = new CrimeAdapterFist(crimes);
+            mCrimeRecyclerView.setAdapter(mCrimeAdapter);
+        }
+        else{
+            mCrimeAdapter.notifyItemChanged(position);
+            Log.d(TAG, "updateUI: Your Notify Data Changed Called");
+        }
     }
 
 
@@ -54,6 +59,7 @@ public class CrimeListFragment extends Fragment {
         private TextView mDateTextView;
         private Crime mCrime;
         private ImageView mImageView;
+
 
         public CrimeHolder(LayoutInflater inflater, ViewGroup parent) {
 
@@ -71,9 +77,11 @@ public class CrimeListFragment extends Fragment {
             Intent intent =CriminalIntent.newIntent(getActivity(),mCrime.getId());
             startActivity(intent);
 
+            tempPosition=mCrimeRecyclerView.getChildAdapterPosition(view);
+
         }
 
-        public void bind(Crime crime) {
+        public final void  bind(Crime crime,int position) {
             mCrime = crime;
             mTitleTextView.setText(mCrime.getTitle());
 
@@ -83,9 +91,10 @@ public class CrimeListFragment extends Fragment {
         }
     }
 
-    private class CrimeAdapterFist extends RecyclerView.Adapter<CrimeHolder> {
+    private class CrimeAdapterFist extends RecyclerView.Adapter<CrimeHolder>{
 
         private List<Crime> mCrimes;
+
 
         public CrimeAdapterFist(List<Crime> crimes) {
             mCrimes = crimes;
@@ -105,7 +114,7 @@ public class CrimeListFragment extends Fragment {
 
 
             Crime crime = mCrimes.get(position);
-            holder.bind(crime);
+            holder.bind(crime,position);
 
         }
 
@@ -114,13 +123,16 @@ public class CrimeListFragment extends Fragment {
             return mCrimes.size();
         }
 
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        updateUI();
+        updateUI(tempPosition);
+
     }
+
 }
 
