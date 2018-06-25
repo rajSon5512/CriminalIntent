@@ -33,12 +33,12 @@ public class CrimeListFragment extends Fragment {
 
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        updateUI(0);
+        updateUI();
 
         return v;
     }
 
-    private void updateUI(int position) {
+    private void updateUI() {
         CrimeLab cm = CrimeLab.get(getActivity());
         List<Crime> crimes = cm.getCrime();
 
@@ -47,7 +47,7 @@ public class CrimeListFragment extends Fragment {
             mCrimeRecyclerView.setAdapter(mCrimeAdapter);
         }
         else{
-            mCrimeAdapter.notifyItemChanged(position);
+            mCrimeAdapter.notifyItemChanged(tempPosition);
             Log.d(TAG, "updateUI: Your Notify Data Changed Called");
         }
     }
@@ -77,7 +77,8 @@ public class CrimeListFragment extends Fragment {
             Intent intent =CriminalIntent.newIntent(getActivity(),mCrime.getId());
             startActivity(intent);
 
-            tempPosition=mCrimeRecyclerView.getChildAdapterPosition(view);
+           // tempPosition=mCrimeRecyclerView.getChildAdapterPosition(view);
+            tempPosition = getAdapterPosition();
 
         }
 
@@ -87,6 +88,8 @@ public class CrimeListFragment extends Fragment {
 
             mDateTextView.setText(DateFormat.format("EEEE,d-MM-yy",crime.getDate()).toString());
             mImageView.setVisibility(crime.isSolved()? itemView.VISIBLE:itemView.INVISIBLE);
+
+
 
         }
     }
@@ -130,7 +133,7 @@ public class CrimeListFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        updateUI(tempPosition);
+        updateUI();
 
     }
 
