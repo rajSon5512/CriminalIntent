@@ -21,6 +21,9 @@ public class CrimePagerActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private List<Crime> mCrimes;
     private static final String EXTRA_ID=CrimePagerActivity.class.getSimpleName();
+    private Button mbackToFirst;
+    private Button mGotoEnd;
+
 
 
 
@@ -44,6 +47,8 @@ public class CrimePagerActivity extends AppCompatActivity {
         UUID crimeId = (UUID) getIntent().getSerializableExtra(EXTRA_ID);
 
         mViewPager=(ViewPager)findViewById(R.id.crime_view_pager);
+        mbackToFirst=findViewById(R.id.back_to_first);
+        mGotoEnd=findViewById(R.id.go_to_end);
 
 
         mCrimes=CrimeLab.get(this).getCrime();
@@ -71,6 +76,25 @@ public class CrimePagerActivity extends AppCompatActivity {
 
         });
 
+        mbackToFirst.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                mViewPager.setCurrentItem(0);
+
+            }
+        });
+
+        mGotoEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mViewPager.setCurrentItem(mCrimes.size()-1);
+
+
+            }
+        });
 
         for (int i = 0; i < mCrimes.size(); i++) {
             if (mCrimes.get(i).getId().equals(crimeId)) {

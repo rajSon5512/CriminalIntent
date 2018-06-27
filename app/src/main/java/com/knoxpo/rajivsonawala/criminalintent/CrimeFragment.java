@@ -23,8 +23,6 @@ public class CrimeFragment extends Fragment {
     private Button mDateButton;
     private CheckBox mCheckBox;
     private static final String ARG_CRIME_ID="Crime_ID";
-    private Button mbackToFirst;
-    private Button mGotoEnd;
 
 
 
@@ -84,36 +82,9 @@ public class CrimeFragment extends Fragment {
             }
         });
 
-        mbackToFirst=v.findViewById(R.id.back_to_first);
-        mGotoEnd=v.findViewById(R.id.go_to_end);
+
         final CrimeLab Crime=CrimeLab.get(getActivity());
 
-
-
-        mbackToFirst.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                mCrime=Crime.getCrime().get(0);
-
-                Intent intent =CrimePagerActivity.newIntent(getActivity(),mCrime.getId());
-                startActivity(intent);
-
-            }
-        });
-
-        mGotoEnd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                mCrime=Crime.getCrime().get(Crime.getCrime().size()-1);
-
-                Intent intent =CrimePagerActivity.newIntent(getActivity(),mCrime.getId());
-                startActivity(intent);
-
-
-            }
-        });
 
         return v;
     }
