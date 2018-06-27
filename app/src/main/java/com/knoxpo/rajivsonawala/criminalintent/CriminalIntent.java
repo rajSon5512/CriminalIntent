@@ -14,6 +14,7 @@ public class CriminalIntent extends SingleFragmentActivity {
     private static final String TAG = CriminalIntent.class.getSimpleName();
     public static final String EXTRA_NAME_LAST = TAG + ".EXTRA_NAME_LAST";
 
+
     @Override
     protected Fragment creatFragment() {
 
