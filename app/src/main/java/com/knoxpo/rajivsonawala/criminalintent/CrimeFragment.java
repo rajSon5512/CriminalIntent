@@ -1,5 +1,6 @@
 package com.knoxpo.rajivsonawala.criminalintent;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -12,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import java.util.List;
 import java.util.UUID;
 
 public class CrimeFragment extends Fragment {
@@ -21,8 +23,8 @@ public class CrimeFragment extends Fragment {
     private Button mDateButton;
     private CheckBox mCheckBox;
     private static final String ARG_CRIME_ID="Crime_ID";
-
-
+    private Button mbackToFirst;
+    private Button mGotoEnd;
 
 
 
@@ -36,8 +38,6 @@ public class CrimeFragment extends Fragment {
 
         mCrime=CrimeLab.get(getActivity()).getCrime(uuid);
 
-
-
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle saveInstance){
@@ -46,6 +46,7 @@ public class CrimeFragment extends Fragment {
 
         mTitleFeild=(EditText)v.findViewById(R.id.crime_title_box);
         mTitleFeild.setText(mCrime.getTitle());
+
 
         mTitleFeild.addTextChangedListener(new TextWatcher() {
             @Override
@@ -79,6 +80,37 @@ public class CrimeFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 mCrime.setSolved(isChecked);
+
+            }
+        });
+
+        mbackToFirst=v.findViewById(R.id.back_to_first);
+        mGotoEnd=v.findViewById(R.id.go_to_end);
+        final CrimeLab Crime=CrimeLab.get(getActivity());
+
+
+
+        mbackToFirst.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mCrime=Crime.getCrime().get(0);
+
+                Intent intent =CrimePagerActivity.newIntent(getActivity(),mCrime.getId());
+                startActivity(intent);
+
+            }
+        });
+
+        mGotoEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mCrime=Crime.getCrime().get(Crime.getCrime().size()-1);
+
+                Intent intent =CrimePagerActivity.newIntent(getActivity(),mCrime.getId());
+                startActivity(intent);
+
 
             }
         });

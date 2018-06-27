@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,12 +23,14 @@ public class CrimePagerActivity extends AppCompatActivity {
     private static final String EXTRA_ID=CrimePagerActivity.class.getSimpleName();
 
 
+
     public static Intent newIntent(Context pageContext,UUID crimeId){
 
         Intent intent=new Intent(pageContext,CrimePagerActivity.class);
         intent.putExtra(EXTRA_ID,crimeId);
         return intent;
     }
+
 
 
 
@@ -41,9 +45,11 @@ public class CrimePagerActivity extends AppCompatActivity {
 
         mViewPager=(ViewPager)findViewById(R.id.crime_view_pager);
 
+
         mCrimes=CrimeLab.get(this).getCrime();
 
         FragmentManager fragmentManager=getSupportFragmentManager();
+
 
         mViewPager.setAdapter(new FragmentStatePagerAdapter(fragmentManager) {
 
@@ -65,6 +71,7 @@ public class CrimePagerActivity extends AppCompatActivity {
 
         });
 
+
         for (int i = 0; i < mCrimes.size(); i++) {
             if (mCrimes.get(i).getId().equals(crimeId)) {
                 mViewPager.setCurrentItem(i);
@@ -72,9 +79,6 @@ public class CrimePagerActivity extends AppCompatActivity {
             }
 
         }
-
-
-
 
 
         }
