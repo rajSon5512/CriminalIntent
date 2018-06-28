@@ -1,0 +1,9 @@
+<DatePicker
+    android:id="@+id/date_picker"
+    android:layout_gravity="center"
+    android:calendarViewShown="false"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    />

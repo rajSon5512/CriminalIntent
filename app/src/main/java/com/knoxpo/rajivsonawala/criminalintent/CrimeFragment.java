@@ -3,6 +3,7 @@ package com.knoxpo.rajivsonawala.criminalintent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -68,7 +69,18 @@ public class CrimeFragment extends Fragment {
 
         mDateButton=(Button)v.findViewById(R.id.crime_date);
         mDateButton.setText(mCrime.getDate().toString());
-        mDateButton.setEnabled(false);
+
+        mDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                FragmentManager fragmentManager=getFragmentManager();
+                DatePickerFragment dialog=DatePickerFragment.newInstance(mCrime.getDate());
+                String DIALOG_DATE="Your_date";
+                dialog.show(fragmentManager,DIALOG_DATE);
+
+            }
+        });
 
         mCheckBox=(CheckBox)v.findViewById(R.id.crime_solved);
         mCheckBox.setChecked(mCrime.isSolved());
@@ -81,6 +93,8 @@ public class CrimeFragment extends Fragment {
 
             }
         });
+
+
 
 
         final CrimeLab Crime=CrimeLab.get(getActivity());
