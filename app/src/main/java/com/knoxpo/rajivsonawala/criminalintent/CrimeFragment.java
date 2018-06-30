@@ -1,5 +1,6 @@
 package com.knoxpo.rajivsonawala.criminalintent;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,6 +26,7 @@ public class CrimeFragment extends Fragment {
     private Button mDateButton;
     private CheckBox mCheckBox;
     private static final String ARG_CRIME_ID="Crime_ID";
+    private static final int REQUEST_DATE = 0;
 
 
 
@@ -77,6 +80,7 @@ public class CrimeFragment extends Fragment {
                 FragmentManager fragmentManager=getFragmentManager();
                 DatePickerFragment dialog=DatePickerFragment.newInstance(mCrime.getDate());
                 String DIALOG_DATE="Your_date";
+                dialog.setTargetFragment(CrimeFragment.this,REQUEST_DATE);
                 dialog.show(fragmentManager,DIALOG_DATE);
 
             }
@@ -99,6 +103,7 @@ public class CrimeFragment extends Fragment {
 
         final CrimeLab Crime=CrimeLab.get(getActivity());
 
+        updateDate();
 
         return v;
     }
@@ -112,7 +117,28 @@ public class CrimeFragment extends Fragment {
         return fragment;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(resultCode!= Activity.RESULT_OK){
+            return;
+
+        }
+
+        if(requestCode==REQUEST_DATE){
+
+            Date date=(Date)data.getSerializableExtra(DatePickerFragment.UPDATE_DATE);
+            mCrime.setDate(date);
+            updateDate();
+
+        }
 
 
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
+    private void updateDate(){
+
+        mDateButton.setText(String.valueOf(mCrime.getDate()));
+    }
 }
