@@ -25,17 +25,13 @@ public class CrimeLab {
 
         mCrimeList = new ArrayList<Crime>();
 
-        for(int i=0;i<100;i++){
-
-            Crime crime=new Crime();
-            crime.setTitle("Crime :"+i);
-            crime.getDate();
-            crime.setSolved(i%2==0);//Every other one
-            mCrimeList.add(crime);
-        }
-
     }
 
+
+    public void addCrime(Crime c){
+
+        mCrimeList.add(c);
+    }
 
     public List<Crime> getCrime() {
 

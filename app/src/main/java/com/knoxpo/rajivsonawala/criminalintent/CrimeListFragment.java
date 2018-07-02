@@ -9,6 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -35,8 +38,36 @@ public class CrimeListFragment extends Fragment {
 
         updateUI();
 
+        setHasOptionsMenu(true);
+
         return v;
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.fragment_crime_list,menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+
+            case R.id.new_Crime:
+                Crime crime=new Crime();
+                CrimeLab.get(getActivity()).addCrime(crime);
+                Intent intent=CrimePagerActivity.newIntent(getActivity(),crime.getId());
+                startActivity(intent);
+                return true;
+        default:
+            return super.onOptionsItemSelected(item);
+         }
+    }
+
+
+
 
     private void updateUI() {
         CrimeLab cm = CrimeLab.get(getActivity());
