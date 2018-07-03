@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
@@ -43,11 +44,24 @@ public class CrimeListFragment extends Fragment {
         return v;
     }
 
+
+    public void update_subtitle(){
+
+        CrimeLab crimeLab=CrimeLab.get(getActivity());
+        int crimeSize=crimeLab.getCrime().size();
+        String subtite_show=String.valueOf("No Of Crimes:"+crimeSize);
+        Log.i(TAG, "update_subtitle: Your"+subtite_show);
+        AppCompatActivity activity=(AppCompatActivity)getActivity();
+        activity.getSupportActionBar().setTitle(subtite_show);
+
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-        inflater.inflate(R.menu.fragment_crime_list,menu);
+
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_crime_list,menu);
     }
 
     @Override
@@ -61,6 +75,11 @@ public class CrimeListFragment extends Fragment {
                 Intent intent=CrimePagerActivity.newIntent(getActivity(),crime.getId());
                 startActivity(intent);
                 return true;
+
+            case R.id.show_subtitle:
+                update_subtitle();
+                return true;
+
         default:
             return super.onOptionsItemSelected(item);
          }
