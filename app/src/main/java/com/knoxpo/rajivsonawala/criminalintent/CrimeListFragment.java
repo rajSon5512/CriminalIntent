@@ -28,10 +28,18 @@ public class CrimeListFragment extends Fragment {
     private Crime mCrime;
     private String TAG="Your_Item";
     private int tempPosition=0;
+    private boolean msubTitleVisible;
+    private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_crime_list, container, false);
+
+
+        if(saveInstanceState!=null){
+
+            msubTitleVisible=saveInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE);
+        }
 
         mCrimeRecyclerView = (RecyclerView) v.findViewById(R.id.crime_recycler_view);
 
@@ -44,15 +52,10 @@ public class CrimeListFragment extends Fragment {
         return v;
     }
 
-
-    public void update_subtitle(){
-
-        CrimeLab crimeLab=CrimeLab.get(getActivity());
-        int crimeSize=crimeLab.getCrime().size();
-        String subtite_show=String.valueOf("No Of Crimes:"+crimeSize);
-        Log.i(TAG, "update_subtitle: Your"+subtite_show);
-        AppCompatActivity activity=(AppCompatActivity)getActivity();
-        activity.getSupportActionBar().setTitle(subtite_show);
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SAVED_SUBTITLE_VISIBLE,msubTitleVisible);
 
     }
 
@@ -62,6 +65,30 @@ public class CrimeListFragment extends Fragment {
 
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_crime_list,menu);
+
+        MenuItem subTitleItem=menu.findItem(R.id.show_subtitle);
+        if(msubTitleVisible){
+            subTitleItem.setTitle(R.string.hide_subtitle);
+        }
+        else{
+            subTitleItem.setTitle(R.string.show_subtitle);
+        }
+    }
+
+    public void update_subtitle(){
+
+        CrimeLab crimeLab=CrimeLab.get(getActivity());
+        int crimeSize=crimeLab.getCrime().size();
+        String subtite_show=String.valueOf("No Of Crimes:"+crimeSize);
+        Log.i(TAG, "update_subtitle: Your"+subtite_show);
+
+        if(!msubTitleVisible)
+        {
+            subtite_show=null;
+        }
+        AppCompatActivity activity=(AppCompatActivity)getActivity();
+        activity.getSupportActionBar().setSubtitle(subtite_show);
+
     }
 
     @Override
@@ -77,6 +104,8 @@ public class CrimeListFragment extends Fragment {
                 return true;
 
             case R.id.show_subtitle:
+                msubTitleVisible=!msubTitleVisible;
+                getActivity().invalidateOptionsMenu();
                 update_subtitle();
                 return true;
 
@@ -100,6 +129,9 @@ public class CrimeListFragment extends Fragment {
             mCrimeAdapter.notifyItemChanged(tempPosition);
             Log.d(TAG, "updateUI: Your Notify Data Changed Called");
         }
+
+
+        update_subtitle();
     }
 
 
@@ -184,6 +216,7 @@ public class CrimeListFragment extends Fragment {
         super.onResume();
 
         updateUI();
+        update_subtitle();
 
     }
 
