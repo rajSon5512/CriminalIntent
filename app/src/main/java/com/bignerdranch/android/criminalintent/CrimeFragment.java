@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,7 @@ public class CrimeFragment extends Fragment {
 
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_CONTACT=1;
-
+    private static final String TAG="your_item";
     private Crime mCrime;
     private EditText mTitleField;
     private Button mDateButton;
@@ -55,6 +56,12 @@ public class CrimeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
+
+        if(mCrime.getSuspect()!=null){
+
+            mGetSuspect.setText(mCrime.getSuspect());
+        }
+
 
     }
 
@@ -157,6 +164,7 @@ public class CrimeFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
@@ -168,6 +176,10 @@ public class CrimeFragment extends Fragment {
             updateDate();
         }
         else if(requestCode==REQUEST_CONTACT && data!=null){
+
+            Log.d(TAG, "onActivityResult: Your enter in onActivityResult");
+            
+            
             Uri contactUri=data.getData();
 
             String[] queryFields=new String[]{ContactsContract.Contacts.DISPLAY_NAME};
@@ -175,17 +187,26 @@ public class CrimeFragment extends Fragment {
             Cursor c=getActivity().getContentResolver().query(contactUri,queryFields,null,null,null);
 
             try{
-                if(c.getCount()!=0){
+                if(c.getCount()==0){
                     return;
                 }
 
+                Log.d(TAG, "onActivityResult: Your Destination"+c.getString(1));
+
                 c.moveToFirst();
-                String suspect=c.getString(0);
+                String suspect=c.getString(1);
+
                 mCrime.setSuspect(suspect);
-                mGetSuspect.setText(suspect);
+                mGetSuspect.setText("hello");
+
+            }
+            catch (Exception e){
+
+                Log.d(TAG, "onActivityResult: "+e.toString());
 
             }
             finally {
+
                 c.close();
             }
         }
