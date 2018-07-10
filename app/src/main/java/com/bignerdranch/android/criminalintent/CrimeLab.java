@@ -9,7 +9,7 @@ import com.bignerdranch.android.criminalintent.database.CrimeBaseHelper;
 import com.bignerdranch.android.criminalintent.database.CrimeCursorWrapper;
 import com.bignerdranch.android.criminalintent.database.CrimeDbSchema;
 import com.bignerdranch.android.criminalintent.database.CrimeDbSchema.CrimeTable;
-
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +18,7 @@ import static com.bignerdranch.android.criminalintent.database.CrimeDbSchema.Cri
 import static com.bignerdranch.android.criminalintent.database.CrimeDbSchema.CrimeTable.Cols.*;
 
 public class CrimeLab {
+
     private static CrimeLab sCrimeLab;
     private Context mContext;
     private SQLiteDatabase mDatabase;
@@ -56,6 +57,7 @@ public class CrimeLab {
         }
         return crimes;
     }
+
 
     public Crime getCrime(UUID id) {
         CrimeCursorWrapper cursor = queryCrimes(

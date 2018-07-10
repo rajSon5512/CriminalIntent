@@ -11,7 +11,6 @@ public class Crime {
     private boolean mSolved;
 
 
-
     private String mSuspect;
 
     public Crime() {
@@ -58,4 +57,11 @@ public class Crime {
     public void setSuspect(String suspect) {
         mSuspect = suspect;
     }
+
+    public String getPhotoFilename(){
+
+        return "IMG_"+getId().toString()+".jpg";
+    }
+
+
 }

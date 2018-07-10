@@ -57,10 +57,7 @@ public class CrimeFragment extends Fragment {
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
 
-        if(mCrime.getSuspect()!=null){
 
-            mGetSuspect.setText(mCrime.getSuspect());
-        }
 
 
     }
@@ -187,17 +184,17 @@ public class CrimeFragment extends Fragment {
             Cursor c=getActivity().getContentResolver().query(contactUri,queryFields,null,null,null);
 
             try{
+
                 if(c.getCount()==0){
                     return;
                 }
 
-                Log.d(TAG, "onActivityResult: Your Destination"+c.getString(1));
 
                 c.moveToFirst();
-                String suspect=c.getString(1);
+                String suspect=c.getString(0);
 
                 mCrime.setSuspect(suspect);
-                mGetSuspect.setText("hello");
+                mGetSuspect.setText(suspect);
 
             }
             catch (Exception e){
