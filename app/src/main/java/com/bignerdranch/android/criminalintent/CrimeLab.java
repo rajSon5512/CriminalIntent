@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.bignerdranch.android.criminalintent.database.CrimeBaseHelper;
 import com.bignerdranch.android.criminalintent.database.CrimeCursorWrapper;
@@ -104,6 +106,13 @@ public class CrimeLab {
         values.put(SOLVED, crime.isSolved() ? 1 : 0);
         values.put(SUSPECT,crime.getSuspect());
         return values;
+    }
+
+    public File getPhotoFile(Crime crime){
+
+        File dirPhoto=mContext.getFilesDir();
+        return new File(dirPhoto,crime.getPhotoFilename());
+
     }
 
 

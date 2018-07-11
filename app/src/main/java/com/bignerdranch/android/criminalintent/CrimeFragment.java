@@ -3,12 +3,16 @@ package com.bignerdranch.android.criminalintent;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -19,9 +23,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import static android.widget.CompoundButton.*;
@@ -33,6 +41,7 @@ public class CrimeFragment extends Fragment {
 
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_CONTACT=1;
+    private static final int REQUEST_CAMERA=2;
     private static final String TAG="your_item";
     private Crime mCrime;
     private EditText mTitleField;
@@ -40,6 +49,10 @@ public class CrimeFragment extends Fragment {
     private CheckBox mSolvedCheckbox;
     private Button mSendCrimeReport;
     private Button mGetSuspect;
+    private File mPhotoFiles;
+    private ImageView mPhotoView;
+    private ImageButton mPhotoButton;
+
 
 
     public static CrimeFragment newInstance(UUID crimeId) {
@@ -56,9 +69,7 @@ public class CrimeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
-
-
-
+        mPhotoFiles=CrimeLab.get(getActivity()).getPhotoFile(mCrime);
 
     }
 
@@ -71,8 +82,14 @@ public class CrimeFragment extends Fragment {
         mTitleField.setText(mCrime.getTitle());
         mSendCrimeReport=(Button)v.findViewById(R.id.crime_report);
         mGetSuspect=(Button)v.findViewById(R.id.choose_suspect);
+
+        final Intent pickCamera=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         final Intent pickContact=new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         //pickContact.addCategory(Intent.CATEGORY_HOME);
+
+
+        mPhotoButton=(ImageButton)v.findViewById(R.id.crime_camera);
+        mPhotoView=(ImageView)v.findViewById(R.id.crime_photo);
 
         mGetSuspect.setOnClickListener(new OnClickListener() {
             @Override
@@ -86,6 +103,26 @@ public class CrimeFragment extends Fragment {
 
             mGetSuspect.setText(mCrime.getSuspect());
         }
+
+        mPhotoButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Uri uri= FileProvider.getUriForFile(getActivity(),"com.bignerdranch.android.criminalintent.fileprovider",mPhotoFiles);
+
+                pickCamera.putExtra(MediaStore.EXTRA_OUTPUT,uri);
+
+                List<ResolveInfo> cameraActivities=getActivity().getPackageManager().queryIntentActivities(pickCamera,PackageManager.MATCH_DEFAULT_ONLY);
+
+                for(ResolveInfo activity:cameraActivities){
+
+                    getActivity().grantUriPermission(activity.activityInfo.packageName,uri,Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                }
+
+
+                startActivityForResult(pickCamera,REQUEST_CAMERA);
+            }
+        });
 
         mTitleField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -148,6 +185,8 @@ public class CrimeFragment extends Fragment {
             mGetSuspect.setEnabled(false);
         }
 
+        updatePhotoView();
+
         return v;
     }
 
@@ -207,6 +246,15 @@ public class CrimeFragment extends Fragment {
                 c.close();
             }
         }
+        else if(resultCode==REQUEST_CAMERA){
+
+            Uri uri=FileProvider.getUriForFile(getActivity(),"com.bignerdranch.android.criminalintent.fileprovider",mPhotoFiles);
+
+            getActivity().revokeUriPermission(uri,Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+            updatePhotoView();
+
+        }
     }
 
     private void updateDate() {
@@ -250,6 +298,23 @@ public class CrimeFragment extends Fragment {
 
     }
 
+    private void updatePhotoView(){
+
+        if(mPhotoFiles==null||!mPhotoFiles.exists()){
+
+            mPhotoView.setImageDrawable(null);
+        }
+        else{
+
+            Bitmap bitmap=PictureUtil.getScaBitmap(mPhotoFiles.getPath(),getActivity());
+            mPhotoView.setImageBitmap(bitmap);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
 
+    }
 }
